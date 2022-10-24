@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿#nullable enable
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POWERSystem.Data.Models;
 
@@ -20,12 +21,12 @@ public class Enclosure : BaseDeletableModel<string>
     /// <summary>
     /// Gets or sets the process-related code that identifies installations and equipment according to their assigned task in the plant process.
     /// </summary>
-    public string Plant { get; set; }
+    public string? Plant { get; set; }
 
     /// <summary>
     /// Gets or sets the location code that identifies the rooms and floors, or other installation sites, for installations and equipment in building structures.
     /// </summary>
-    public string Location { get; set; }
+    public string? Location { get; set; }
 
     /// <summary>
     /// Gets or sets the KKS code that identifies equipment according to its assigned task in the  plant process.
@@ -49,9 +50,10 @@ public class Enclosure : BaseDeletableModel<string>
     /// Gets or sets comments about the enclosure like specific requirements about the design, manufacturing or installation.
     /// </summary>
     [MaxLength(EnclosureConstants.CommentMaxLength)]
-    public string Comment { get; set; }
+    public string? Comment { get; set; }
 
     [ForeignKey(nameof(Project))]
+    [Required]
     public string ProjectId { get; set; }
 
     public virtual Project Project { get; set; }
@@ -60,6 +62,7 @@ public class Enclosure : BaseDeletableModel<string>
 
     public virtual IEnumerable<Part> Parts { get; set; }
 
-    // public IEnumerable<Cable> Cables { get; set; }
-    // public IEnumerable<Cable> CablesRequest { get; set; }
+    public virtual IEnumerable<Cable> Cables { get; set; }
+
+    public virtual IEnumerable<CableOrder> CablesOrders { get; set; }
 }

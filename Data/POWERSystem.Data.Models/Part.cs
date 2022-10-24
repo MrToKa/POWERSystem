@@ -10,6 +10,7 @@ public class Part
     public Part()
     {
         this.Enclosure = new HashSet<Enclosure>();
+        this.Storage = new HashSet<Storage>();
     }
 
     [Key]
@@ -50,7 +51,15 @@ public class Part
     /// <summary>
     /// Gets or sets the price of the part. It can be used for calculating the price of the enclosure or the order.
     /// </summary>
-    public decimal Price { get; set; }
+    public decimal? Price { get; set; }
+
+    /// <summary>
+    /// Gets or sets the scope of the delivery of the part.
+    /// </summary>
+    [Required]
+    public int Delivery { get; set; }
 
     public virtual IEnumerable<Enclosure> Enclosure { get; set; }
+
+    public virtual IEnumerable<Storage> Storage { get; set; }
 }

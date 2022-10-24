@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POWERSystem.Data;
 
@@ -11,9 +12,10 @@ using POWERSystem.Data;
 namespace POWERSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221024182003_AddedStorages")]
+    partial class AddedStorages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,21 +143,6 @@ namespace POWERSystem.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("PartStorage", b =>
-                {
-                    b.Property<int>("PartsId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("StorageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("PartsId", "StorageId");
-
-                    b.HasIndex("StorageId");
-
-                    b.ToTable("PartStorage");
                 });
 
             modelBuilder.Entity("POWERSystem.Data.Models.ApplicationRole", b =>
@@ -309,7 +296,6 @@ namespace POWERSystem.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("EnclosureId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FromLocation")
@@ -394,9 +380,6 @@ namespace POWERSystem.Data.Migrations
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("EnclosureId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -414,8 +397,6 @@ namespace POWERSystem.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EnclosureId");
 
                     b.HasIndex("IsDeleted");
 
@@ -454,7 +435,6 @@ namespace POWERSystem.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProjectId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Revision")
@@ -475,41 +455,6 @@ namespace POWERSystem.Data.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("Enclosure");
-                });
-
-            modelBuilder.Entity("POWERSystem.Data.Models.Equipment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<Guid?>("StorageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("StorageId");
-
-                    b.ToTable("Equipment");
                 });
 
             modelBuilder.Entity("POWERSystem.Data.Models.Part", b =>
@@ -550,9 +495,14 @@ namespace POWERSystem.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("StorageId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PartOrderId");
+
+                    b.HasIndex("StorageId");
 
                     b.ToTable("Parts");
                 });
@@ -768,21 +718,6 @@ namespace POWERSystem.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PartStorage", b =>
-                {
-                    b.HasOne("POWERSystem.Data.Models.Part", null)
-                        .WithMany()
-                        .HasForeignKey("PartsId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("POWERSystem.Data.Models.Storage", null)
-                        .WithMany()
-                        .HasForeignKey("StorageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("POWERSystem.Data.Models.Cable", b =>
                 {
                     b.HasOne("POWERSystem.Data.Models.CableOrder", null)
@@ -791,9 +726,7 @@ namespace POWERSystem.Data.Migrations
 
                     b.HasOne("POWERSystem.Data.Models.Enclosure", "Enclosure")
                         .WithMany("Cables")
-                        .HasForeignKey("EnclosureId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("EnclosureId");
 
                     b.HasOne("POWERSystem.Data.Models.Storage", null)
                         .WithMany("Cables")
@@ -804,10 +737,6 @@ namespace POWERSystem.Data.Migrations
 
             modelBuilder.Entity("POWERSystem.Data.Models.CableOrder", b =>
                 {
-                    b.HasOne("POWERSystem.Data.Models.Enclosure", null)
-                        .WithMany("CablesOrders")
-                        .HasForeignKey("EnclosureId");
-
                     b.HasOne("POWERSystem.Data.Models.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
@@ -825,18 +754,9 @@ namespace POWERSystem.Data.Migrations
                 {
                     b.HasOne("POWERSystem.Data.Models.Project", "Project")
                         .WithMany("Enclosures")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("ProjectId");
 
                     b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("POWERSystem.Data.Models.Equipment", b =>
-                {
-                    b.HasOne("POWERSystem.Data.Models.Storage", null)
-                        .WithMany("Equipment")
-                        .HasForeignKey("StorageId");
                 });
 
             modelBuilder.Entity("POWERSystem.Data.Models.Part", b =>
@@ -844,6 +764,10 @@ namespace POWERSystem.Data.Migrations
                     b.HasOne("POWERSystem.Data.Models.PartOrder", null)
                         .WithMany("Parts")
                         .HasForeignKey("PartOrderId");
+
+                    b.HasOne("POWERSystem.Data.Models.Storage", null)
+                        .WithMany("Parts")
+                        .HasForeignKey("StorageId");
                 });
 
             modelBuilder.Entity("POWERSystem.Data.Models.PartOrder", b =>
@@ -864,7 +788,7 @@ namespace POWERSystem.Data.Migrations
             modelBuilder.Entity("POWERSystem.Data.Models.Storage", b =>
                 {
                     b.HasOne("POWERSystem.Data.Models.Project", "Project")
-                        .WithMany("Storages")
+                        .WithMany()
                         .HasForeignKey("ProjectId");
 
                     b.Navigation("Project");
@@ -887,8 +811,6 @@ namespace POWERSystem.Data.Migrations
             modelBuilder.Entity("POWERSystem.Data.Models.Enclosure", b =>
                 {
                     b.Navigation("Cables");
-
-                    b.Navigation("CablesOrders");
                 });
 
             modelBuilder.Entity("POWERSystem.Data.Models.PartOrder", b =>
@@ -899,8 +821,6 @@ namespace POWERSystem.Data.Migrations
             modelBuilder.Entity("POWERSystem.Data.Models.Project", b =>
                 {
                     b.Navigation("Enclosures");
-
-                    b.Navigation("Storages");
                 });
 
             modelBuilder.Entity("POWERSystem.Data.Models.Storage", b =>
@@ -909,9 +829,9 @@ namespace POWERSystem.Data.Migrations
 
                     b.Navigation("Cables");
 
-                    b.Navigation("Equipment");
-
                     b.Navigation("PartOrders");
+
+                    b.Navigation("Parts");
                 });
 #pragma warning restore 612, 618
         }

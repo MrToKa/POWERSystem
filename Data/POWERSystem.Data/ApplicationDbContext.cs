@@ -32,6 +32,16 @@
 
         public DbSet<Project> Projects { get; set; }
 
+        public DbSet<Cable> Cables { get; set; }
+
+        public DbSet<PartOrder> PartsOrders { get; set; }
+
+        public DbSet<CableOrder> CablesOrders { get; set; }
+
+        public DbSet<Storage> Storages { get; set; }
+
+        public DbSet<Equipment> Equipment { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

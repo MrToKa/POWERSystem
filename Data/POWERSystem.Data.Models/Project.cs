@@ -1,4 +1,5 @@
-﻿namespace POWERSystem.Data.Models
+﻿#nullable enable
+namespace POWERSystem.Data.Models
 {
     using System;
     using System.Collections.Generic;
@@ -13,6 +14,7 @@
         {
             this.Id = Guid.NewGuid().ToString();
             this.Enclosures = new HashSet<Enclosure>();
+            this.Storages = new HashSet<Storage>();
         }
 
         /// <summary>
@@ -34,7 +36,7 @@
         /// Gets or sets a short description of the project. It can include base requirements about the design, manufacturing, erection or commissioning of the project.
         /// </summary>
         [MaxLength(ProjectConstants.DescriptionMaxLength)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets contractor name.
@@ -51,5 +53,7 @@
 
         // TODO: Implement documentation class for the project.
         public virtual IEnumerable<Enclosure> Enclosures { get; set; }
+
+        public virtual IEnumerable<Storage> Storages { get; set; }
     }
 }
