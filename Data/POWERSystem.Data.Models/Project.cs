@@ -15,6 +15,7 @@ namespace POWERSystem.Data.Models
             this.Id = Guid.NewGuid().ToString();
             this.Enclosures = new HashSet<Enclosure>();
             this.Storages = new HashSet<Storage>();
+            this.SiteServices = new HashSet<SiteService>();
         }
 
         /// <summary>
@@ -55,5 +56,7 @@ namespace POWERSystem.Data.Models
         public virtual IEnumerable<Enclosure> Enclosures { get; set; }
 
         public virtual IEnumerable<Storage> Storages { get; set; }
+
+        public virtual IEnumerable<SiteService> SiteServices { get; set; }
     }
 }

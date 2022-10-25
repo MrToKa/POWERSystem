@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POWERSystem.Data;
 
@@ -11,9 +12,10 @@ using POWERSystem.Data;
 namespace POWERSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221025172440_SiteServicesAdded")]
+    partial class SiteServicesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -704,6 +706,10 @@ namespace POWERSystem.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("ProjectId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("RequestedFrom")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -713,6 +719,8 @@ namespace POWERSystem.Data.Migrations
                         .HasColumnType("time");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
 
                     b.ToTable("SiteServices");
                 });
@@ -741,21 +749,6 @@ namespace POWERSystem.Data.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("Storages");
-                });
-
-            modelBuilder.Entity("ProjectSiteService", b =>
-                {
-                    b.Property<string>("ProjectsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("SiteServicesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectsId", "SiteServicesId");
-
-                    b.HasIndex("SiteServicesId");
-
-                    b.ToTable("ProjectSiteService");
                 });
 
             modelBuilder.Entity("EnclosurePart", b =>
@@ -925,6 +918,17 @@ namespace POWERSystem.Data.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("POWERSystem.Data.Models.SiteService", b =>
+                {
+                    b.HasOne("POWERSystem.Data.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("POWERSystem.Data.Models.Storage", b =>
                 {
                     b.HasOne("POWERSystem.Data.Models.Project", "Project")
@@ -932,21 +936,6 @@ namespace POWERSystem.Data.Migrations
                         .HasForeignKey("ProjectId");
 
                     b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("ProjectSiteService", b =>
-                {
-                    b.HasOne("POWERSystem.Data.Models.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("POWERSystem.Data.Models.SiteService", null)
-                        .WithMany()
-                        .HasForeignKey("SiteServicesId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("POWERSystem.Data.Models.ApplicationUser", b =>
